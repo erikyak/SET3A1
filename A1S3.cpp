@@ -8,7 +8,8 @@ bool isInCircles(double x, double y) {
            (std::pow(x - 1.5, 2) + std::pow(y - 2, 2) <= 5.0 / 4.0) &&
            (std::pow(x - 2, 2) + std::pow(y - 1.5, 2) <= 5.0 / 4.0);
 }
-// Расчет площади перекрытия
+
+// Расчет площади перекрытия методом Монте-Карло
 double monteCarlo(int N, double xMin, double xMax, double yMin, double yMax) {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -30,19 +31,32 @@ double monteCarlo(int N, double xMin, double xMax, double yMin, double yMax) {
 
 int main() {
     std::ofstream dataFile("../results.csv");
-    dataFile << "N,Approximation,Error\n";
+    dataFile << "Scale,N,Approximation,Error\n";
 
     const double exactArea = 0.25 * M_PI + 1.25 * asin(0.8) - 1;
-    const double xMin = 0;
-    const double xMax = 3;
-    const double yMin = 0;
-    const double yMax = 3;
 
-    for (int N = 100; N <= 100000; N += 500) {
-        double approx = monteCarlo(N, xMin, xMax, yMin, yMax);
-        double error = abs(approx - exactArea) / exactArea * 100.0;
-        dataFile << N << "," << approx << "," << error << "\n";
-        std::cout << "N: " << N << ", Approximation: " << approx << ", Error: " << error << "%\n";
+    // Параметры масштабов прямоугольной области
+    const double baseXMin = 0;
+    const double baseXMax = 3;
+    const double baseYMin = 0;
+    const double baseYMax = 3;
+
+    // Коэффициенты увеличения масштаба
+    for (double scale = 1.0; scale <= 3.0; scale += 0.5) {
+        double xMin = baseXMin - scale;
+        double xMax = baseXMax + scale;
+        double yMin = baseYMin - scale;
+        double yMax = baseYMax + scale;
+
+        // Изменение количества точек
+        for (int N = 100; N <= 100000; N += 500) {
+            double approx = monteCarlo(N, xMin, xMax, yMin, yMax);
+            double error = abs(approx - exactArea) / exactArea * 100.0;
+            dataFile << scale << "," << N << "," << approx << "," << error << "\n";
+            std::cout << "Scale: " << scale << ", N: " << N
+                      << ", Approximation: " << approx
+                      << ", Error: " << error << "%\n";
+        }
     }
 
     dataFile.close();
