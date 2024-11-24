@@ -42,7 +42,7 @@ int main() {
     const double baseYMax = 3;
 
     // Коэффициенты увеличения масштаба
-    for (double scale = 1.0; scale <= 3.0; scale += 0.5) {
+    for (double scale = 0; scale <= 3.0; scale += 0.5) {
         double xMin = baseXMin - scale;
         double xMax = baseXMax + scale;
         double yMin = baseYMin - scale;
