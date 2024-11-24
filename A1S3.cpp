@@ -30,7 +30,7 @@ double monteCarlo(int N, double xMin, double xMax, double yMin, double yMax) {
 }
 
 int main() {
-    std::ofstream dataFile("../results.csv");
+    std::ofstream dataFile("../results3d.csv");
     dataFile << "Scale,N,Approximation,Error\n";
 
     const double exactArea = 0.25 * M_PI + 1.25 * asin(0.8) - 1;
